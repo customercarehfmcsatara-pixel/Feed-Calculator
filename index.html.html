@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Hindustan Feeds - Calculator & Consultant</title>
+    <style>
+        :root {
+            --brand-green: #0b5e46;
+            --brand-orange: #f38a00;
+            --light-bg: #f0f4f3;
+            --white: #ffffff;
+            --text-dark: #333;
+        }
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background-color: var(--light-bg); 
+            margin: 0; 
+            padding: 10px; 
+            color: var(--text-dark);
+        }
+        .container { 
+            max-width: 600px; 
+            margin: auto; 
+            background: var(--white); 
+            border-radius: 12px; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1); 
+            overflow: hidden;
+        }
+        .header { background-color: var(--white); text-align: center; padding: 15px 10px; border-bottom: 4px solid var(--brand-green); }
+        .header img { max-width: 250px; height: auto; }
+        .tagline { color: var(--brand-green); font-weight: bold; font-size: 14px; margin-top: 5px; }
+        
+        .section-title { background-color: var(--brand-green); color: var(--white); padding: 10px 15px; font-size: 16px; margin: 0; text-align: center; letter-spacing: 0.5px; }
+        .form-content { padding: 15px; }
+        
+        .input-group { margin-bottom: 15px; }
+        .input-group label { display: block; margin-bottom: 6px; font-weight: 600; font-size: 14px; color: #555; }
+        .input-group input { width: 100%; padding: 10px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 6px; font-size: 15px; background-color: #fff; }
+        .input-group input:focus { border-color: var(--brand-orange); outline: none; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        
+        table { width: 100%; border-collapse: collapse; margin-bottom: 10px; font-size: 14px; }
+        th, td { border: 1px solid #e0e0e0; padding: 10px 5px; text-align: center; vertical-align: middle; }
+        th { background-color: #e8f0ec; color: var(--brand-green); font-weight: bold; }
+        .input-cell { padding: 0; }
+        .input-cell input { width: 100%; height: 100%; border: none; text-align: center; padding: 10px 0; background-color: #fff9e6; font-weight: bold; color: var(--brand-orange); font-size: 15px;}
+        .input-cell input:focus { background-color: #ffefb3; outline: none; }
+        
+        /* Result & Suggestion Box */
+        .result-box { background-color: #f9f9f9; border: 2px dashed #ccc; border-radius: 8px; padding: 15px; margin-top: 15px; }
+        .result-title { font-size: 18px; font-weight: bold; margin-bottom: 10px; text-align: center; color: var(--brand-green); }
+        
+        .ratio-box { display: flex; justify-content: space-between; background: #e8f0ec; padding: 10px; border-radius: 6px; margin: 10px 0; font-weight: bold; }
+        .ratio-item { text-align: center; width: 48%; }
+        .ratio-item span { display: block; font-size: 18px; color: var(--brand-orange); }
+
+        .suggestion-box { background-color: #eaf4f4; border-left: 4px solid var(--brand-green); padding: 12px; margin-top: 10px; border-radius: 4px; font-size: 14.5px; line-height: 1.5; color: #222; }
+        .warning-box { background-color: #fff3cd; border-left: 4px solid var(--brand-orange); }
+        .danger-box { background-color: #f8d7da; border-left: 4px solid #dc3545; }
+        
+        .action-box { background-color: #fff; border: 2px solid var(--brand-orange); border-radius: 6px; padding: 12px; margin-top: 15px; }
+        .action-title { font-weight: bold; color: var(--brand-orange); margin-bottom: 10px; font-size: 16px; }
+
+        .season-box { background-color: #e6f7ff; border-left: 4px solid #007bff; padding: 10px; margin-top: 10px; border-radius: 4px; font-size: 14px; }
+        .vaccine-box { background-color: #fdf3eb; border-left: 4px solid #fd7e14; padding: 10px; margin-top: 10px; border-radius: 4px; font-size: 14px; }
+        .tech-box { background-color: #f3e8ff; border: 1px solid #d8b4fe; padding: 12px; margin-top: 15px; border-radius: 6px; font-size: 14px; }
+
+        .tips-list { margin: 10px 0 0 0; padding-left: 20px; font-size: 13.5px; color: #444; line-height: 1.6; }
+        .tips-list li { margin-bottom: 5px; }
+
+        .btn { padding: 12px 20px; border: none; width: 100%; font-size: 16px; font-weight: bold; border-radius: 6px; cursor: pointer; margin-bottom: 10px; transition: 0.3s; }
+        .btn-calc { background-color: var(--brand-orange); color: white; }
+        .btn-submit { background-color: var(--brand-green); color: white; }
+        
+        /* Share Buttons */
+        .btn-share-app { background-color: #007bff; color: white; }
+        .btn-share-report { background-color: #25D366; color: white; font-size: 15px; margin-top: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <img src="logo.png" alt="Hindustan Feeds Logo">
+        <div class="tagline">भरपूर दूध ➤ संपन्न शेतकरी ➤ सशक्त भारत</div>
+    </div>
+    
+    <form id="feedForm">
+        <h3 class="section-title">शेतकरी आणि प्रतिनिधी माहिती</h3>
+        <div class="form-content">
+            <div class="grid-2">
+                <div class="input-group"><label>विक्री प्रतिनिधी</label><input type="text" name="RepName" required></div>
+                <div class="input-group"><label>शेतकऱ्याचे नाव</label><input type="text" name="FarmerName" required></div>
+                <div class="input-group"><label>मोबाईल नंबर</label><input type="number" name="Mobile" required></div>
+                <div class="input-group"><label>गाव</label><input type="text" name="Village" required></div>
+            </div>
+            <div class="grid-2">
+                <div class="input-group"><label>तालुका</label><input type="text" name="Taluka" required></div>
+                <div class="input-group"><label>जिल्हा</label><input type="text" name="District" required></div>
+            </div>
+        </div>
+
+        <h3 class="section-title">गाईची माहिती (Requirement)</h3>
+        <div class="form-content">
+            <table>
+                <tr>
+                    <th>गाईचे वजन (Kg)</th>
+                    <!-- Default weight set to 500 -->
+                    <td class="input-cell"><input type="number" id="cowWeight" name="CowWeight" value="500" onfocus="if(this.value=='500'||this.value=='0')this.value=''" onblur="if(this.value=='')this.value='500'"></td>
+                    <td id="reqWeight" style="font-weight:bold;">0</td>
+                </tr>
+                <tr>
+                    <th>दूध उत्पादन (Litre)</th>
+                    <td class="input-cell"><input type="number" id="cowMilk" name="MilkYield" value="0" onfocus="if(this.value=='0')this.value=''" onblur="if(this.value=='')this.value='0'"></td>
+                    <td id="reqMilk" style="font-weight:bold;">0</td>
+                </tr>
+                <tr style="background-color:#e8f0ec;">
+                    <th colspan="2">एकूण गरज (Total DM Requirement)</th>
+                    <td id="totalRequirementDisp" style="font-weight:bold; color:var(--brand-green); font-size:16px;">0</td>
+                    <input type="hidden" name="TotalRequirement" id="totalRequirement">
+                </tr>
+            </table>
+        </div>
+
+        <h3 class="section-title">आजचा आहार (Daily Intake)</h3>
+        <div class="form-content">
+            <table>
+                <tr>
+                    <th>खाद्याचा प्रकार</th>
+                    <th>Intake (Kg)</th>
+                    <th>DM %</th>
+                    <th>Total (Kg)</th>
+                </tr>
+                <tr>
+                    <td style="text-align:left;">मुरघास (Silage)</td>
+                    <td class="input-cell"><input type="number" id="inSilage" value="0" onfocus="if(this.value=='0')this.value=''" onblur="if(this.value=='')this.value='0'"></td>
+                    <td>30%</td>
+                    <td id="dmSilage">0.00</td>
+                </tr>
+                <tr>
+                    <td style="text-align:left;">हिरवा चारा (Green)</td>
+                    <td class="input-cell"><input type="number" id="inGreen" value="0" onfocus="if(this.value=='0')this.value=''" onblur="if(this.value=='')this.value='0'"></td>
+                    <td>20%</td>
+                    <td id="dmGreen">0.00</td>
+                </tr>
+                <tr>
+                    <td style="text-align:left;">सुका चारा (Dry Straw)</td>
+                    <td class="input-cell"><input type="number" id="inDry" value="0" onfocus="if(this.value=='0')this.value=''" onblur="if(this.value=='')this.value='0'"></td>
+                    <td>89%</td>
+                    <td id="dmDry">0.00</td>
+                </tr>
+                <tr>
+                    <td style="text-align:left;">मका भरडा / DDGS</td>
+                    <td class="input-cell"><input type="number" id="inDdgs" value="0" onfocus="if(this.value=='0')this.value=''" onblur="if(this.value=='')this.value='0'"></td>
+                    <td>88%</td>
+                    <td id="dmDdgs">0.00</td>
+                </tr>
+                <tr>
+                    <td style="text-align:left;">बार्ली (Barley)</td>
+                    <td class="input-cell"><input type="number" id="inBarley" value="0" onfocus="if(this.value=='0')this.value=''" onblur="if(this.value=='')this.value='0'"></td>
+                    <td>15%</td>
+                    <td id="dmBarley">0.00</td>
+                </tr>
+                <tr>
+                    <td style="text-align:left;">पशुखाद्य (Concentrate)</td>
+                    <td class="input-cell"><input type="number" id="inConcentrate" value="0" onfocus="if(this.value=='0')this.value=''" onblur="if(this.value=='')this.value='0'"></td>
+                    <td>89%</td>
+                    <td id="dmConcentrate">0.00</td>
+                </tr>
+            </table>
+
+            <button type="button" class="btn btn-calc" onclick="calculateResult()">🧮 कॅल्क्युलेट करा (Calculate)</button>
+            <button type="button" class="btn btn-share-app" onclick="shareApp()">📲 हे ॲप व्हॉट्सॲपवर शेअर करा</button>
+
+            <!-- Result Box -->
+            <div class="result-box" id="resultSection" style="display:none;">
+                <div class="result-title">📊 तांत्रिक आहार अहवाल आणि सल्ला</div>
+                
+                <div style="display:flex; justify-content:space-around; margin-bottom:10px; text-align:center;">
+                    <div><strong>एकूण गरज:</strong> <br><span id="resReq" style="font-size:18px;">0</span> Kg</div>
+                    <div><strong>सध्याचा आहार:</strong> <br><span id="resIntake" style="font-size:18px;">0</span> Kg</div>
+                </div>
+
+                <div class="ratio-box">
+                    <div class="ratio-item">चारा (Roughage)<br><span id="roughageRatio">0%</span></div>
+                    <div class="ratio-item">पशुखाद्य (Concentrate)<br><span id="concentrateRatio">0%</span></div>
+                </div>
+
+                <!-- Only the deficit line will be shown here, no detailed action plan -->
+                <div id="dynamicSuggestions"></div>
+                
+                <!-- Auto Season Detector -->
+                <div id="seasonTipDisplay" class="season-box"></div>
+
+                <!-- Auto Vaccination Detector -->
+                <div id="vaccinationTipDisplay" class="vaccine-box"></div>
+
+                <div style="margin-top: 15px; border-top: 1px dashed #ccc; padding-top: 10px;">
+                    <strong>📌 शास्त्रशुद्ध व गोठा व्यवस्थापन टिप्स:</strong>
+                    <ul class="tips-list" id="dynamicProductTips">
+                        <!-- Product and regular tips will be injected here via JS -->
+                    </ul>
+                </div>
+                
+                <!-- Advanced Tech Tip -->
+                <div class="tech-box">
+                    <strong>🚀 ॲडव्हान्स टेक्नॉलॉजी टीप (Advanced Dairy Tech):</strong><br>
+                    <span style="color:#444; line-height: 1.5; display: inline-block; margin-top: 5px;">
+                        <b>स्मार्ट कॉलर / ॲक्टिव्हिटी मॉनिटर:</b> आधुनिक गोठ्यांमध्ये आता गाईंच्या गळ्यात सेन्सर (Smart Collars) लावले जातात. हे सेन्सर गाईचे रवंथ करणे आणि तिच्या हालचालींवर लक्ष ठेवतात, ज्यामुळे गाय अचूक 'माजावर' आल्याचे शेतकऱ्याला मोबाईलवर समजते व आजारही वेळेआधीच ओळखता येतात.
+                    </span>
+                </div>
+
+                <!-- Share Report via WhatsApp Provision -->
+                <button type="button" class="btn btn-share-report" onclick="shareFarmerReport()">🟢 व्हॉट्सॲपवर शेतकऱ्याला रिपोर्ट पाठवा</button>
+
+                <input type="hidden" name="TotalIntake" id="totalIntake">
+                <input type="hidden" name="Status" id="statusVal">
+            </div>
+            
+            <hr style="border:0; border-top:1px solid #ccc; margin: 20px 0;">
+            <button type="submit" class="btn btn-submit">☁️ डेटा सेव्ह करा (Save Data)</button>
+        </div>
+    </form>
+</div>
+
+<script>
+    function calculateResult() {
+        let weight = parseFloat(document.getElementById('cowWeight').value) || 0;
+        let milk = parseFloat(document.getElementById('cowMilk').value) || 0;
+        let reqWeight = weight * 0.02; 
+        let reqMilk = milk * 0.33; 
+        let totalReq = reqWeight + reqMilk; 
+        
+        document.getElementById('reqWeight').innerText = reqWeight.toFixed(1);
+        document.getElementById('reqMilk').innerText = reqMilk.toFixed(1);
+        document.getElementById('totalRequirementDisp').innerText = totalReq.toFixed(2);
+        document.getElementById('totalRequirement').value = totalReq.toFixed(2);
+
+        // Intake Calculations (Raw Kg)
+        let rawSilage = parseFloat(document.getElementById('inSilage').value) || 0;
+        let rawGreen = parseFloat(document.getElementById('inGreen').value) || 0;
+        let rawDry = parseFloat(document.getElementById('inDry').value) || 0;
+        let rawDdgs = parseFloat(document.getElementById('inDdgs').value) || 0;
+        let rawBarley = parseFloat(document.getElementById('inBarley').value) || 0;
+        let rawConcentrate = parseFloat(document.getElementById('inConcentrate').value) || 0;
+
+        // DM Calculations
+        let silage = rawSilage * 0.30;
+        let green = rawGreen * 0.20;
+        let dry = rawDry * 0.89;
+        let ddgs = rawDdgs * 0.88;
+        let barley = rawBarley * 0.15;
+        let concentrate = rawConcentrate * 0.89;
+
+        let roughageTotal = silage + green + dry;
+        let concentrateTotal = ddgs + barley + concentrate;
+        let totalIntake = roughageTotal + concentrateTotal;
+        
+        // Display individual intakes
+        document.getElementById('dmSilage').innerText = silage.toFixed(2);
+        document.getElementById('dmGreen').innerText = green.toFixed(2);
+        document.getElementById('dmDry').innerText = dry.toFixed(2);
+        document.getElementById('dmDdgs').innerText = ddgs.toFixed(2);
+        document.getElementById('dmBarley').innerText = barley.toFixed(2);
+        document.getElementById('dmConcentrate').innerText = concentrate.toFixed(2);
+
+        document.getElementById('resReq').innerText = totalReq.toFixed(2);
+        document.getElementById('resIntake').innerText = totalIntake.toFixed(2);
+        document.getElementById('totalIntake').value = totalIntake.toFixed(2);
+
+        // Ratio Calculation
+        let roughagePer = 0;
+        let concentratePer = 0;
+        if(totalIntake > 0) {
+            roughagePer = Math.round((roughageTotal / totalIntake) * 100);
+            concentratePer = Math.round((concentrateTotal / totalIntake) * 100);
+        }
+        
+        document.getElementById('roughageRatio').innerText = roughagePer + "%";
+        document.getElementById('concentrateRatio').innerText = concentratePer + "%";
+
+        // Main Error / Warning Box
+        let diff = totalIntake - totalReq;
+        let suggestionHTML = "";
+        let dbStatus = "";
+
+        if (totalIntake === 0) {
+            suggestionHTML = `<div class="suggestion-box warning-box">कृपया वरील रकान्यांमध्ये आजच्या आहाराची माहिती भरा.</div>`;
+            dbStatus = "No Data";
+        } 
+        else if (diff < -0.5) {
+            suggestionHTML = `<div class="suggestion-box danger-box">
+                🔴 <b>आहार कमी पडत आहे (Dry Matter Deficit):</b><br>
+                गाईला रोज सुमारे <b>${Math.abs(diff).toFixed(2)} Kg ड्राय मॅटर (अन्न)</b> कमी मिळत आहे. 
+            </div>`;
+            dbStatus = "Underfeeding";
+        } 
+        else if (concentratePer > 45) {
+            suggestionHTML = `<div class="suggestion-box warning-box">
+                ⚠️ <b>पशुखाद्याचे प्रमाण जास्त आहे:</b><br>
+                पशुखाद्याचे प्रमाण ${concentratePer}% पेक्षा जास्त आहे. (आदर्श प्रमाण ४०%)
+            </div>`;
+            dbStatus = "High Concentrate Risk";
+        } 
+        else if (roughagePer > 65) {
+            suggestionHTML = `<div class="suggestion-box warning-box">
+                💡 <b>चाऱ्याचे प्रमाण जास्त आहे:</b><br>
+                चाऱ्याचे प्रमाण ${roughagePer}% पेक्षा जास्त आहे. (आदर्श प्रमाण ६०%)
+            </div>`;
+            dbStatus = "High Roughage Risk";
+        } 
+        else {
+            suggestionHTML = `<div class="suggestion-box">
+                ✅ <b>अतिउत्तम आहार समतोल:</b><br>
+                चारा आणि पशुखाद्याचे संतुलन व आहाराची मात्रा अगदी योग्य आहे!
+            </div>`;
+            dbStatus = "Perfect Balance";
+        }
+        
+        document.getElementById('dynamicSuggestions').innerHTML = suggestionHTML;
+        document.getElementById('statusVal').value = dbStatus + " (" + roughagePer + ":" + concentratePer + ")";
+
+        // Dynamic Product & General Tips Array
+        let tipArray = [];
+        tipArray.push(`<li><b>पायका आजार (Pica):</b> जर गाय माती, दोरी, प्लास्टिक खात असेल किंवा भिंत/लोखंड चाटत असेल, तर हे फॉस्फरसच्या कमतरतेचे लक्षण आहे. यावर अत्यंत प्रभावी उपाय म्हणून आहारात <b>नवहिंद कंपनीचे 'Hind power'</b> नक्की वापरा.</li>`);
+        
+        if (milk >= 15) {
+            tipArray.push(`<li><b>जास्त दुधासाठी:</b> गाय जास्त दूध देत असल्याने तिच्या शरीरातील झीज भरून काढण्यासाठी <b>नवहिंद कंपनीचे 'Hi cal'</b> (कॅल्शियम) आणि <b>'Chelated Feed Supplement Superior'</b> नक्की द्या.</li>`);
+        } else {
+            tipArray.push(`<li><b>आरोग्य व प्रजनन:</b> उत्तम आरोग्यासाठी आणि गाय वेळेवर माजावर येण्यासाठी रोजच्या आहारात <b>नवहिंद कंपनीचे 'Chelated Feed Supplement Superior'</b> चा वापर करा.</li>`);
+        }
+
+        if (parseFloat(document.getElementById('inSilage').value) > 0) {
+            tipArray.push(`<li><b>मुरघास निर्मिती:</b> स्वतःचा उत्तम प्रतीचा, हिरवागार आणि बुरशीमुक्त मुरघास बनवताना नेहमी <b>नवहिंद कंपनीचे 'Murba'</b> (मुरघास कल्चर) चा वापर करा.</li>`);
+        }
+        
+        tipArray.push(`<li><b>TMR व आहार बदल:</b> चाऱ्याची योग्य कुट्टी करून तो पशुखाद्यात एकजीव (TMR) करून द्यावा. आहारात कोणताही बदल अचानक करू नये, जुना व नवीन चारा हळूहळू मिसळून द्यावा.</li>`);
+        tipArray.push(`<li><b>गोठा व्यवस्थापन:</b> जनावरांना बांधून ठेवण्यापेक्षा 'मुक्त संचार' (Free Stall) पद्धतीचा वापर करावा. गोठ्यात जनावरांना खाद्य खाण्यासाठी पुरेशी जागा (Feed Bunk Space) असावी.</li>`);
+        tipArray.push(`<li><b>आरोग्य:</b> मास्टायटिस (स्तनदाह) आजार टाळण्यासाठी दूध काढण्यापूर्वी आणि नंतर सडांची व कासेची स्वच्छता करावी. शक्यतो मिल्किंग मशीनचा वापर करावा.</li>`);
+
+        document.getElementById('dynamicProductTips').innerHTML = tipArray.join("");
+
+        // 1. Auto Season Detection Logic
+        const currentMonth = new Date().getMonth() + 1; 
+        let seasonTipText = "";
+        if (currentMonth >= 6 && currentMonth <= 9) { 
+            seasonTipText = "🌧️ <b>सध्याचा ऋतू - पावसाळा:</b> गोठा व बसण्याची जागा कोरडी राहील याची काळजी घ्या. चाऱ्यात बुरशी लागणार नाही याकडे लक्ष द्या, बुरशीयुक्त चाऱ्यामुळे दुधात टॉक्सिन्स येऊ शकतात.";
+        } else if (currentMonth >= 3 && currentMonth <= 5) { 
+            seasonTipText = "☀️ <b>सध्याचा ऋतू - उन्हाळा:</b> उष्णतेचा ताण (Heat Stress) कमी करण्यासाठी शक्य असल्यास फॉगर्सचा/पंख्यांचा वापर करा. जनावरांना २४ तास स्वच्छ पाणी उपलब्ध ठेवा.";
+        } else { 
+            seasonTipText = "❄️ <b>सध्याचा ऋतू - हिवाळा:</b> थंडीच्या दिवसात जनावरांचे थेट थंड वाऱ्यापासून संरक्षण करा. शरीराचे तापमान टिकवण्यासाठी आहारातून योग्य ऊर्जा मिळेल याची काळजी घ्या.";
+        }
+        document.getElementById('seasonTipDisplay').innerHTML = seasonTipText;
+
+        // 2. Auto Vaccination Schedule Logic
+        let vaccineTipText = "";
+        if (currentMonth === 5 || currentMonth === 6) { 
+            vaccineTipText = "💉 <b>लसीकरण अलर्ट (पावसाळा पूर्व):</b> पावसाळा सुरू होण्यापूर्वी गाई/म्हशींना <b>'घटसर्प' (HS)</b> आणि <b>'फऱ्या' (BQ)</b> ची लस टोचून घ्या. शेळ्यांसाठी <b>'आंत्रविषार' (ET)</b> आणि <b>'PPR'</b> चे लसीकरण करून घ्या.";
+        } else if (currentMonth === 2 || currentMonth === 3 || currentMonth === 8 || currentMonth === 9) { 
+            vaccineTipText = "💉 <b>लसीकरण अलर्ट:</b> गाई आणि म्हशींना <b>'लाळ्या खुरकूत' (FMD)</b> ची लस देण्याची ही सर्वात योग्य वेळ आहे. पशुवैद्यकांशी संपर्क साधा.";
+        } else { 
+            vaccineTipText = "💉 <b>लसीकरण व आरोग्य नोंद:</b> पशुवैद्यकांच्या सल्ल्यानुसार जनावरांचे लसीकरण व दर ३-४ महिन्यांनी जंतनिर्मूलन वेळेवर करत राहा. ४ ते ८ महिने वयाच्या कालवडींना <b>'ब्रुसेलोसिस' (Brucellosis)</b> ची लस नक्की द्या.";
+        }
+        document.getElementById('vaccinationTipDisplay').innerHTML = vaccineTipText;
+        
+        document.getElementById('resultSection').style.display = 'block';
+    }
+
+    // Share App Logic
+    function shareApp() {
+        let appLink = window.location.href;
+        let shareText = `*Hindustan Feeds - डिजिटल फीड कॅल्क्युलेटर आणि कन्सल्टंट ॲप* 🌾🥛\n\nपशुधनाचा आहार संतुलित करण्यासाठी, ड्राय मॅटर मोजण्यासाठी आणि दुधाची फॅट व उत्पादन वाढवण्यासाठी हे ॲप वापरा:\n🔗 लिंक: ${appLink}`;
+        
+        if (navigator.share) {
+            navigator.share({ title: 'Hindustan Feeds App', text: shareText }).catch(console.error);
+        } else {
+            window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(shareText)}`, '_blank');
+        }
+    }
+
+    // Share Report Logic (Farmer targeted message)
+    function shareFarmerReport() {
+        let farmerName = document.getElementsByName('FarmerName')[0].value || 'शेतकरी';
+        let village = document.getElementsByName('Village')[0].value || '-';
+        let req = document.getElementById('resReq').innerText;
+        let intake = document.getElementById('resIntake').innerText;
+        
+        let diff = parseFloat(req) - parseFloat(intake);
+        let deficitText = "";
+        
+        if (diff > 0.5) {
+            deficitText = `⚠️ *कमतरता:* गाईला रोज सुमारे *${diff.toFixed(2)} Kg ड्राय मॅटर (अन्न)* कमी मिळत आहे.\n---------------------------------\n`;
+        }
+
+        let shareText = `*Hindustan Feeds - तांत्रिक आहार अहवाल* 📊\n\n` +
+                        `👤 *शेतकरी:* ${farmerName} (${village})\n` +
+                        `---------------------------------\n` +
+                        `📈 *एकूण गरज:* ${req} Kg DM\n` +
+                        `🌾 *सध्याचा आहार:* ${intake} Kg DM\n` +
+                        `---------------------------------\n` +
+                        deficitText +
+                        `💡 *अचूक आहार नियोजनासाठी कृपया आमच्या हिंदुस्तान फीड्स प्रतिनिधीशी संपर्क साधा.*\n\n` +
+                        `*Hindustan Feeds Mfg. Co. Satara*`;
+
+        if (navigator.share) {
+            navigator.share({ title: 'शेतकरी आहार अहवाल', text: shareText }).catch(console.error);
+        } else {
+            window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(shareText)}`, '_blank');
+        }
+    }
+
+    // --- OFFLINE SYNC TECHNOLOGY FOR GOOGLE SHEETS ---
+    document.getElementById('feedForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        calculateResult(); 
+        
+        // --- नवीन Google Script URL अपडेट केली आहे ---
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbwvVnKlwxuaG6cA_r4LnI0R9nGg-dolqHD9c9kiarkqRAhjK-UqFdav5gzNm2NrBPGRSA/exec'; 
+        const formData = new FormData(this);
+        const submitBtn = document.querySelector('.btn-submit');
+        
+        const dataObj = Object.fromEntries(formData.entries());
+
+        if (navigator.onLine) {
+            submitBtn.innerHTML = '⏳ डेटा सेव्ह होत आहे...';
+            submitBtn.disabled = true;
+            
+            fetch(scriptURL, { method: 'POST', body: formData, mode: 'no-cors'})
+                .then(response => {
+                    alert('✅ माहिती यशस्वीरित्या सेव्ह झाली आहे!');
+                    document.getElementById('feedForm').reset();
+                    document.getElementById('resultSection').style.display = 'none';
+                    resetBtn(submitBtn);
+                })
+                .catch(error => {
+                    console.error('Network error during save, saving locally.', error);
+                    saveDataLocally(dataObj);
+                    resetBtn(submitBtn);
+                });
+        } else {
+            saveDataLocally(dataObj);
+        }
+    });
+
+    function resetBtn(btn) {
+        btn.innerHTML = '☁️ डेटा सेव्ह करा (Save Data)';
+        btn.disabled = false;
+    }
+
+    function saveDataLocally(dataObj) {
+        let pending = JSON.parse(localStorage.getItem('pendingSubmissions')) || [];
+        pending.push(dataObj);
+        localStorage.setItem('pendingSubmissions', JSON.stringify(pending));
+        alert('📡 इंटरनेट उपलब्ध नाही! तुमचा डेटा मोबाईलमध्ये सुरक्षितपणे सेव्ह झाला आहे. नेटवर्क आल्यावर तो आपोआप गुगल शीटवर सिंक (Sync) होईल.');
+        document.getElementById('feedForm').reset();
+        document.getElementById('resultSection').style.display = 'none';
+    }
+
+    window.addEventListener('online', syncOfflineData);
+
+    function syncOfflineData() {
+        let pending = JSON.parse(localStorage.getItem('pendingSubmissions')) || [];
+        if (pending.length > 0) {
+            const scriptURL = 'https://script.google.com/macros/s/AKfycbwvVnKlwxuaG6cA_r4LnI0R9nGg-dolqHD9c9kiarkqRAhjK-UqFdav5gzNm2NrBPGRSA/exec'; 
+            
+            pending.forEach((dataObj) => {
+                let fd = new FormData();
+                for (let key in dataObj) { fd.append(key, dataObj[key]); }
+                fetch(scriptURL, { method: 'POST', body: fd, mode: 'no-cors'});
+            });
+            
+            localStorage.removeItem('pendingSubmissions');
+            alert('✅ तुमचा ऑफलाईन डेटा आता गुगल शीटमध्ये यशस्वीरित्या जमा झाला आहे!');
+        }
+    }
+
+    window.onload = function() {
+        if (navigator.onLine) {
+            syncOfflineData();
+        }
+    }
+</script>
+
+</body>
+</html>
