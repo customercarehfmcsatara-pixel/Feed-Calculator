@@ -170,7 +170,7 @@
             </table>
 
             <button type="button" class="btn btn-calc" onclick="calculateResult()">🧮 कॅल्क्युलेट करा (Calculate)</button>
-            <button type="button" class="btn btn-share-app" onclick="shareApp()">📲 हे ॲप व्हॉट्सॲपवर शेअर करा</button>
+            <button type="submit" class="btn btn-submit">☁️ डेटा सेव्ह करा (Save Data)</button>
 
             <!-- Result Box -->
             <div class="result-box" id="resultSection" style="display:none;">
@@ -217,7 +217,7 @@
             </div>
             
             <hr style="border:0; border-top:1px solid #ccc; margin: 20px 0;">
-            <button type="submit" class="btn btn-submit">☁️ डेटा सेव्ह करा (Save Data)</button>
+            <button type="button" class="btn btn-share-app" onclick="shareApp()">📲 हे ॲप व्हॉट्सॲपवर शेअर करा</button>
         </div>
     </form>
 </div>
@@ -449,7 +449,7 @@
         let pending = JSON.parse(localStorage.getItem('pendingSubmissions')) || [];
         pending.push(dataObj);
         localStorage.setItem('pendingSubmissions', JSON.stringify(pending));
-        alert('📡 इंटरनेट उपलब्ध नाही! तुमचा डेटा मोबाईलमध्ये सुरक्षितपणे सेव्ह झाला आहे. नेटवर्क आल्यावर तो आपोआप गुगल शीटवर सिंक (Sync) होईल.');
+        alert('📡 इंटरनेट उपलब्ध नाही! तुमचा डेटा मोबाईलमध्ये सुरक्षितपणे सेव्ह झाला class आहे. नेटवर्क आल्यावर तो आपोआप गुगल शीटवर सिंक (Sync) होईल.');
         document.getElementById('feedForm').reset();
         document.getElementById('resultSection').style.display = 'none';
     }
