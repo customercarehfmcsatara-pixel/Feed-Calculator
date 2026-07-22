@@ -297,7 +297,7 @@
         else if (concentratePer > 45) {
             suggestionHTML = `<div class="suggestion-box warning-box">
                 ⚠️ <b>पशुखाद्याचे प्रमाण जास्त आहे:</b><br>
-                पशुखाद्याचे प्रमाण ${concentratePer}% पेक्षा जास्त বৃহত্তর आहे. (आदर्श प्रमाण ४०%)
+                पशुखाद्याचे प्रमाण ${concentratePer}% पेक्षा जास्त आहे. (आदर्श प्रमाण ४०%)
             </div>`;
             dbStatus = "High Concentrate Risk";
         } 
@@ -413,7 +413,7 @@
         e.preventDefault();
         calculateResult(); 
         
-        const scriptURL = 'https://script.google.com/macros/s/AKfycbxdKIbPmCrqmE0zyO1dBk77NHbFP1yKWDCG5bTQPQThNAXaflLtul1_O8-UqoXx8CRdpQ/exec'; 
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbwvVnKlwxuaG6cA_r4LnI0R9nGg-dolqHD9c9kiarkqRAhjK-UqFdav5gzNm2NrBPGRSA/exec'; 
         const formData = new FormData(this);
         const submitBtn = document.querySelector('.btn-submit');
         
@@ -449,7 +449,7 @@
         let pending = JSON.parse(localStorage.getItem('pendingSubmissions')) || [];
         pending.push(dataObj);
         localStorage.setItem('pendingSubmissions', JSON.stringify(pending));
-        alert('📡 इंटरनेट उपलब्ध नाही! तुमचा डेटा मोबाईलमध्ये सुरक्षितपणे सेव्ह झाला class आहे. नेटवर्क आल्यावर तो आपोआप गुगल शीटवर सिंक (Sync) होईल.');
+        alert('📡 इंटरनेट उपलब्ध नाही! तुमचा डेटा मोबाईलमध्ये सुरक्षितपणे सेव्ह झाला आहे. नेटवर्क आल्यावर तो आपोआप गुगल शीटवर सिंक (Sync) होईल.');
         document.getElementById('feedForm').reset();
         document.getElementById('resultSection').style.display = 'none';
     }
@@ -459,7 +459,7 @@
     function syncOfflineData() {
         let pending = JSON.parse(localStorage.getItem('pendingSubmissions')) || [];
         if (pending.length > 0) {
-            const scriptURL = 'https://script.google.com/macros/s/AKfycbxdKIbPmCrqmE0zyO1dBk77NHbFP1yKWDCG5bTQPQThNAXaflLtul1_O8-UqoXx8CRdpQ/exec'; 
+            const scriptURL = 'https://script.google.com/macros/s/AKfycbwvVnKlwxuaG6cA_r4LnI0R9nGg-dolqHD9c9kiarkqRAhjK-UqFdav5gzNm2NrBPGRSA/exec'; 
             
             pending.forEach((dataObj) => {
                 let fd = new FormData();
