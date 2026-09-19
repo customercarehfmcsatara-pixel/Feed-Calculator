@@ -150,7 +150,7 @@
                     <td id="dmDry">0.00</td>
                 </tr>
                 <tr>
-                    <td style="text-align:left;">मका भरडा / DDGS</td>
+                    <td style="text-align:left;">मका भरडा</td>
                     <td class="input-cell"><input type="number" step="any" id="inDdgs" value="0" onfocus="if(this.value=='0')this.value=''" onblur="if(this.value=='')this.value='0'"></td>
                     <td>88%</td>
                     <td id="dmDdgs">0.00</td>
@@ -176,10 +176,41 @@
             <div class="result-box" id="resultSection" style="display:none;">
                 <div class="result-title">📊 तांत्रिक आहार अहवाल आणि सल्ला</div>
                 
-                <div style="display:flex; justify-content:space-around; margin-bottom:10px; text-align:center;">
-                    <div><strong>एकूण गरज:</strong> <br><span id="resReq" style="font-size:18px;">0</span> Kg</div>
-                    <div><strong>सध्याचा आहार:</strong> <br><span id="resIntake" style="font-size:18px;">0</span> Kg</div>
+                <!-- NEW LOGIC DISPLAY: Requirement vs Intake vs Diff -->
+                <div style="overflow-x:auto;">
+                    <table style="width: 100%; border-collapse: collapse; margin-bottom: 15px; font-size: 14px; text-align: center; background-color: #fff; border: 1px solid #ccc;">
+                        <tr style="background-color: #e8f0ec; color: var(--brand-green);">
+                            <th style="padding: 8px; border: 1px solid #ccc;">घटक</th>
+                            <th style="padding: 8px; border: 1px solid #ccc;">गरज</th>
+                            <th style="padding: 8px; border: 1px solid #ccc;">आहार</th>
+                            <th style="padding: 8px; border: 1px solid #ccc;">फरक</th>
+                        </tr>
+                        <tr>
+                            <td style="padding: 8px; border: 1px solid #ccc; text-align: left;"><b>DM (Kg)</b></td>
+                            <td style="padding: 8px; border: 1px solid #ccc; font-weight:bold;" id="resReq">0</td>
+                            <td style="padding: 8px; border: 1px solid #ccc; font-weight:bold;" id="resIntake">0</td>
+                            <td style="padding: 8px; border: 1px solid #ccc; font-weight:bold;" id="resDiffDM">0</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 8px; border: 1px solid #ccc; text-align: left;"><b>प्रथिने (g)</b></td>
+                            <td style="padding: 8px; border: 1px solid #ccc; font-weight:bold;" id="resProteinReq">0</td>
+                            <td style="padding: 8px; border: 1px solid #ccc; font-weight:bold;" id="resProteinIntake">0</td>
+                            <td style="padding: 8px; border: 1px solid #ccc; font-weight:bold;" id="resDiffProtein">0</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 8px; border: 1px solid #ccc; text-align: left;"><b>ऊर्जा (Mcal)</b></td>
+                            <td style="padding: 8px; border: 1px solid #ccc; font-weight:bold;" id="resMEReq">0</td>
+                            <td style="padding: 8px; border: 1px solid #ccc; font-weight:bold;" id="resMEIntake">0</td>
+                            <td style="padding: 8px; border: 1px solid #ccc; font-weight:bold;" id="resDiffME">0</td>
+                        </tr>
+                    </table>
                 </div>
+
+                <input type="hidden" name="TotalProteinReq" id="totalProteinVal">
+                <input type="hidden" name="TotalMEReq" id="totalMEVal">
+                <input type="hidden" name="TotalProteinIntake" id="totalProteinIntakeVal">
+                <input type="hidden" name="TotalMEIntake" id="totalMEIntakeVal">
+                <!-- END NEW LOGIC DISPLAY -->
 
                 <div class="ratio-box">
                     <div class="ratio-item">चारा (Roughage)<br><span id="roughageRatio">0%</span></div>
@@ -235,6 +266,10 @@
         document.getElementById('totalRequirementDisp').innerText = totalReq.toFixed(2);
         document.getElementById('totalRequirement').value = totalReq.toFixed(2);
 
+        // Required Protein (g) & Energy (Mcal)
+        let proteinTotal = (weight * 1) + (milk * 100);
+        let meTotal = (weight * 0.015) + (milk * 0.7);
+
         // Intake Calculations (Raw Kg)
         let rawSilage = parseFloat(document.getElementById('inSilage').value) || 0;
         let rawGreen = parseFloat(document.getElementById('inGreen').value) || 0;
@@ -255,6 +290,24 @@
         let concentrateTotal = ddgs + barley + concentrate;
         let totalIntake = roughageTotal + concentrateTotal;
         
+        // --- NEW LOGIC: Calculate Intake Protein (g) and Energy (Mcal) based on DM ---
+        let proteinSilage = silage * (8 / 100) * 1000;
+        let proteinGreen = green * (6.17 / 100) * 1000;
+        let proteinDry = dry * (3.7 / 100) * 1000;
+        let proteinDdgs = ddgs * (9 / 100) * 1000;
+        let proteinBarley = barley * (23.4 / 100) * 1000;
+        let proteinConcentrate = concentrate * (22 / 100) * 1000;
+        let totalProteinIntake = proteinSilage + proteinGreen + proteinDry + proteinDdgs + proteinBarley + proteinConcentrate;
+
+        let energySilage = silage * 1.35;
+        let energyGreen = green * 1.4;
+        let energyDry = dry * 0.8;
+        let energyDdgs = ddgs * 2.01;
+        let energyBarley = barley * 1.4;
+        let energyConcentrate = concentrate * 1.6;
+        let totalEnergyIntake = energySilage + energyGreen + energyDry + energyDdgs + energyBarley + energyConcentrate;
+        // --- END NEW LOGIC ---
+
         // Display individual intakes
         document.getElementById('dmSilage').innerText = silage.toFixed(2);
         document.getElementById('dmGreen').innerText = green.toFixed(2);
@@ -263,9 +316,33 @@
         document.getElementById('dmBarley').innerText = barley.toFixed(2);
         document.getElementById('dmConcentrate').innerText = concentrate.toFixed(2);
 
+        // Update DM Table Rows
         document.getElementById('resReq').innerText = totalReq.toFixed(2);
         document.getElementById('resIntake').innerText = totalIntake.toFixed(2);
+        let diffDM = totalIntake - totalReq;
+        document.getElementById('resDiffDM').innerText = diffDM > 0 ? "+" + diffDM.toFixed(2) : diffDM.toFixed(2);
+        document.getElementById('resDiffDM').style.color = diffDM < 0 ? "red" : "green";
+
+        // Update Protein Table Rows
+        document.getElementById('resProteinReq').innerText = proteinTotal.toFixed(0);
+        document.getElementById('resProteinIntake').innerText = totalProteinIntake.toFixed(0);
+        let diffProtein = totalProteinIntake - proteinTotal;
+        document.getElementById('resDiffProtein').innerText = diffProtein > 0 ? "+" + diffProtein.toFixed(0) : diffProtein.toFixed(0);
+        document.getElementById('resDiffProtein').style.color = diffProtein < 0 ? "red" : "green";
+
+        // Update Energy Table Rows
+        document.getElementById('resMEReq').innerText = meTotal.toFixed(1);
+        document.getElementById('resMEIntake').innerText = totalEnergyIntake.toFixed(1);
+        let diffME = totalEnergyIntake - meTotal;
+        document.getElementById('resDiffME').innerText = diffME > 0 ? "+" + diffME.toFixed(1) : diffME.toFixed(1);
+        document.getElementById('resDiffME').style.color = diffME < 0 ? "red" : "green";
+
+        // Set Values to hidden inputs for DB saving
         document.getElementById('totalIntake').value = totalIntake.toFixed(2);
+        document.getElementById('totalProteinVal').value = proteinTotal.toFixed(0);
+        document.getElementById('totalMEVal').value = meTotal.toFixed(1);
+        document.getElementById('totalProteinIntakeVal').value = totalProteinIntake.toFixed(0);
+        document.getElementById('totalMEIntakeVal').value = totalEnergyIntake.toFixed(1);
 
         // Ratio Calculation
         let roughagePer = 0;
@@ -279,7 +356,6 @@
         document.getElementById('concentrateRatio').innerText = concentratePer + "%";
 
         // Main Error / Warning Box
-        let diff = totalIntake - totalReq;
         let suggestionHTML = "";
         let dbStatus = "";
 
@@ -287,10 +363,10 @@
             suggestionHTML = `<div class="suggestion-box warning-box">कृपया वरील रकान्यांमध्ये आजच्या आहाराची माहिती भरा.</div>`;
             dbStatus = "No Data";
         } 
-        else if (diff < -0.5) {
+        else if (diffDM < -0.5) {
             suggestionHTML = `<div class="suggestion-box danger-box">
                 🔴 <b>आहार कमी पडत आहे (Dry Matter Deficit):</b><br>
-                गाईला रोज सुमारे <b>${Math.abs(diff).toFixed(2)} Kg ड्राय मॅटर (अन्न)</b> कमी मिळत आहे. 
+                गाईला रोज सुमारे <b>${Math.abs(diffDM).toFixed(2)} Kg ड्राय मॅटर (अन्न)</b> कमी मिळत आहे. 
             </div>`;
             dbStatus = "Underfeeding";
         } 
@@ -381,21 +457,35 @@
     function shareFarmerReport() {
         let farmerName = document.getElementsByName('FarmerName')[0].value || 'शेतकरी';
         let village = document.getElementsByName('Village')[0].value || '-';
+        
         let req = document.getElementById('resReq').innerText;
         let intake = document.getElementById('resIntake').innerText;
+        let diffDM = parseFloat(req) - parseFloat(intake);
         
-        let diff = parseFloat(req) - parseFloat(intake);
+        let proteinReq = document.getElementById('resProteinReq').innerText;
+        let proteinIntake = document.getElementById('resProteinIntake').innerText;
+        let diffProtein = parseFloat(proteinReq) - parseFloat(proteinIntake);
+        
+        let meReq = document.getElementById('resMEReq').innerText;
+        let meIntake = document.getElementById('resMEIntake').innerText;
+        let diffME = parseFloat(meReq) - parseFloat(meIntake);
+        
         let deficitText = "";
         
-        if (diff > 0.5) {
-            deficitText = `⚠️ *कमतरता:* गाईला रोज सुमारे *${diff.toFixed(2)} Kg ड्राय मॅटर (अन्न)* कमी मिळत आहे.\n---------------------------------\n`;
+        // Adding deficit alerts to whatsapp message if there is a shortage
+        if (diffDM > 0.5) deficitText += `⚠️ *DM कमतरता:* ${diffDM.toFixed(2)} Kg\n`;
+        if (diffProtein > 100) deficitText += `⚠️ *प्रथिने कमतरता:* ${diffProtein.toFixed(0)} g\n`;
+        if (diffME > 1) deficitText += `⚠️ *ऊर्जा कमतरता:* ${diffME.toFixed(1)} Mcal\n`;
+        
+        if (deficitText !== "") {
+            deficitText = deficitText + `---------------------------------\n`;
         }
 
         let shareText = `*Hindustan Feeds - तांत्रिक आहार अहवाल* 📊\n\n` +
                         `👤 *शेतकरी:* ${farmerName} (${village})\n` +
                         `---------------------------------\n` +
-                        `📈 *एकूण गरज:* ${req} Kg DM\n` +
-                        `🌾 *सध्याचा आहार:* ${intake} Kg DM\n` +
+                        `📈 *एकूण DM गरज:* ${req} Kg\n` +
+                        `🌾 *सध्याचा आहार:* ${intake} Kg\n` +
                         `---------------------------------\n` +
                         deficitText +
                         `💡 *अचूक आहार नियोजनासाठी कृपया आमच्या हिंदुस्तान फीड्स प्रतिनिधीशी संपर्क साधा.*\n\n` +
